@@ -1,3 +1,4 @@
+import { RunningCatWidget } from "./widgets/RunningCatWidget";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Text3DWidget from './widgets/Text3DWidget';
 import SlideTextWidget from './widgets/SlideTextWidget';
@@ -49,6 +50,11 @@ const Home = () => (
         </Link>
       </li>
       <li>
+        <Link to="/widget/running-cat" style={{ color: "#ffaa00" }}>
+          Running Cat 🐈
+        </Link>
+      </li>
+      <li>
         <Link to="/control" style={{ color: '#ff00cc' }}>
           Remote Control Panel
         </Link>
@@ -70,6 +76,7 @@ function App() {
         <Route path="/widget/thaiwater-level" element={<ThaiWaterLevelWidget />} />
         <Route path="/widget/visualizer" element={<AudioVisualizerWidget />} />
         <Route path="/control" element={<ControlPanel />} />
+        <Route path="/widget/running-cat" element={<RunningCatWidget />} />
       </Routes>
     </BrowserRouter>
   );
