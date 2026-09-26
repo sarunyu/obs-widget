@@ -38,8 +38,25 @@ export const PrachinAlertWidget = () => {
         // The API returns { generated_at: '...', count: X, items: [...] }
         const items = Array.isArray(data) ? data : (data.items || []);
         
-        if (items.length > 0) {
-          setAnnouncements(items);
+        // Filter out announcements older than 2 hours
+        const now = new Date().getTime();
+        const recentItems = items.filter((item: any) => {
+          const timeStr = item.created_at || item.timestamp || item.date || item.time;
+          if (!timeStr) return false;
+          
+          const itemTime = new Date(timeStr).getTime();
+          if (isNaN(itemTime)) return false;
+          
+          const diffHours = (now - itemTime) / (1000 * 60 * 60);
+          return diffHours <= 2;
+        });
+        
+        if (recentItems.length > 0) {
+          setAnnouncements(recentItems);
+        } else {
+          // Hide completely if there are no recent announcements
+          setAnnouncements([]);
+          setIsVisible(false);
         }
       } catch (err) {
         console.error('Error fetching announcements:', err);
