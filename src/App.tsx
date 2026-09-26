@@ -1,3 +1,4 @@
+import { ChromeDinoWidget } from "./widgets/ChromeDinoWidget";
 import { RunningCatWidget } from "./widgets/RunningCatWidget";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Text3DWidget from './widgets/Text3DWidget';
@@ -50,6 +51,11 @@ const Home = () => (
         </Link>
       </li>
       <li>
+        <Link to="/widget/chrome-dino" style={{ color: "#cccccc" }}>
+          Chrome Dino 🦖
+        </Link>
+      </li>
+      <li>
         <Link to="/widget/running-cat" style={{ color: "#ffaa00" }}>
           Running Cat 🐈
         </Link>
@@ -77,6 +83,7 @@ function App() {
         <Route path="/widget/visualizer" element={<AudioVisualizerWidget />} />
         <Route path="/control" element={<ControlPanel />} />
         <Route path="/widget/running-cat" element={<RunningCatWidget />} />
+        <Route path="/widget/chrome-dino" element={<ChromeDinoWidget />} />
       </Routes>
     </BrowserRouter>
   );
