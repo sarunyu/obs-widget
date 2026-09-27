@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 export const DancingGirlWidget = () => {
   // Default is a dancing anime girl GIF (Chika Fujiwara)
   // Users can override this by passing ?url=YOUR_GIF_URL
-  const [gifUrl, setGifUrl] = useState('https://media.giphy.com/media/m3SYKzhmod1IY/giphy.gif');
+  const [gifUrl, setGifUrl] = useState('https://media.giphy.com/media/K9xXlcQI6FRwQ/giphy.gif');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
