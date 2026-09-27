@@ -140,8 +140,32 @@ export const ThaiWaterLevelWidget = () => {
     }
   }
 
-  // Hook must be called unconditionally
-  const graphPoints = useWaterlevelGraph(data?.station?.id, data?.station_type);
+// Hook must be called unconditionally
+const graphPoints = useWaterlevelGraph(data?.station?.id, data?.station_type);
+
+// Text-to-speech for water level changes
+const waterLevelForSpeech = data?.waterlevel_msl || data?.waterlevel_m || "0.00";
+const stationNameForSpeech = data?.station?.tele_station_name?.th || currentStationName;
+const [lastAnnounced, setLastAnnounced] = useState<Record<string, string>>({});
+
+useEffect(() => {
+  if (data && waterLevelForSpeech) {
+    const stationId = data.station?.id;
+    if (stationId) {
+       if (lastAnnounced[stationId] !== waterLevelForSpeech) {
+          // Only speak if this is an update, not the initial load of the station
+          if (lastAnnounced[stationId] !== undefined) {
+             const text = `ระดับน้ำสถานี ${stationNameForSpeech} มีการเปลี่ยนแปลง ค่าล่าสุดคือ ${waterLevelForSpeech} เมตร`;
+             const utterance = new SpeechSynthesisUtterance(text);
+             utterance.lang = "th-TH";
+             window.speechSynthesis.speak(utterance);
+          }
+          setLastAnnounced(prev => ({...prev, [stationId]: waterLevelForSpeech}));
+       }
+    }
+  }
+}, [data?.station?.id, waterLevelForSpeech, stationNameForSpeech]);
+
 
   if (dataList.length === 0) {
     return (
