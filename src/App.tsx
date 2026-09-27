@@ -1,3 +1,4 @@
+import { DancingBlobWidget } from "./widgets/DancingBlobWidget";
 import { ChromeDinoWidget } from "./widgets/ChromeDinoWidget";
 import { RunningCatWidget } from "./widgets/RunningCatWidget";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -51,6 +52,11 @@ const Home = () => (
         </Link>
       </li>
       <li>
+        <Link to="/widget/dancing-blob" style={{ color: "#ff7eb3" }}>
+          Dancing Blob 🎧
+        </Link>
+      </li>
+      <li>
         <Link to="/widget/chrome-dino" style={{ color: "#cccccc" }}>
           Chrome Dino 🦖
         </Link>
@@ -85,6 +91,7 @@ function App() {
         <Route path="/control" element={<ControlPanel />} />
         <Route path="/widget/running-cat" element={<RunningCatWidget />} />
         <Route path="/widget/chrome-dino" element={<ChromeDinoWidget />} />
+        <Route path="/widget/dancing-blob" element={<DancingBlobWidget />} />
       </Routes>
     </BrowserRouter>
   );
