@@ -72,7 +72,7 @@ const Sparkline = ({ data, colorClass }: { data: number[], colorClass: string })
         <polyline points={points} fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`stroke-current ${colorClass}`} />
       </svg>
       <div className="flex justify-between text-[8px] text-slate-500 mt-1 uppercase">
-        <span>3 วันที่แล้ว</span>
+        <span>1 วันที่แล้ว</span>
         <span>ปัจจุบัน</span>
       </div>
     </div>
