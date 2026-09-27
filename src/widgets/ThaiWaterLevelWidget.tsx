@@ -123,6 +123,26 @@ export const ThaiWaterLevelWidget = () => {
     return () => clearInterval(rotateInterval);
   }, [stationList]);
 
+  const currentStationName = stationList[currentIndex];
+  let data = dataList.find((item: any) => 
+    item.station?.tele_station_name?.th?.includes(currentStationName)
+  );
+
+  // Fallback if not found
+  if (!data && dataList.length > 0) {
+    const provinceData = dataList.filter((item: any) => 
+      item.geocode?.province_name?.th === province
+    );
+    if (provinceData.length > 0) {
+      data = provinceData.reduce((prev: any, current: any) => 
+        (Number(prev.storage_percent || 0) > Number(current.storage_percent || 0)) ? prev : current
+      );
+    }
+  }
+
+  // Hook must be called unconditionally
+  const graphPoints = useWaterlevelGraph(data?.station?.id, data?.station_type);
+
   if (dataList.length === 0) {
     return (
       <div className="w-screen h-screen flex items-center justify-center font-body text-white">
@@ -134,33 +154,15 @@ export const ThaiWaterLevelWidget = () => {
     );
   }
 
-  const currentStationName = stationList[currentIndex];
-  let data = dataList.find((item: any) => 
-    item.station?.tele_station_name?.th?.includes(currentStationName)
-  );
-
-  // Fallback if not found
   if (!data) {
-    const provinceData = dataList.filter((item: any) => 
-      item.geocode?.province_name?.th === province
-    );
-    if (provinceData.length > 0) {
-      data = provinceData.reduce((prev: any, current: any) => 
-        (Number(prev.storage_percent || 0) > Number(current.storage_percent || 0)) ? prev : current
-      );
-    } else {
-      return (
-        <div className="w-screen h-screen flex items-center justify-center font-body text-white">
-          <div className="bg-red-900/80 p-4 rounded-xl border border-red-500/50 shadow-2xl backdrop-blur-md">
-            <span>ไม่พบข้อมูลสถานี: {currentStationName}</span>
-          </div>
+    return (
+      <div className="w-screen h-screen flex items-center justify-center font-body text-white">
+        <div className="bg-red-900/80 p-4 rounded-xl border border-red-500/50 shadow-2xl backdrop-blur-md">
+          <span>ไม่พบข้อมูลสถานี: {currentStationName}</span>
         </div>
-      );
-    }
+      </div>
+    );
   }
-
-  // Fetch graph data using our custom hook
-  const graphPoints = useWaterlevelGraph(data.station?.id, data.station_type);
 
   // Determine situation level (1=Normal, 2=Watch, 3=Warning, 4=Critical, 5=Overflow)
   let severityLabel = 'ระดับน้ำ ปกติ';
