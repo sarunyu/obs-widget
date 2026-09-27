@@ -1,12 +1,90 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+// Custom Hook to fetch graph data for a specific station
+function useWaterlevelGraph(stationId?: number | string, stationType?: string) {
+  const [points, setPoints] = useState<number[]>([]);
+  
+  useEffect(() => {
+    if (!stationId || !stationType) return;
+    
+    let isMounted = true;
+    const now = new Date();
+    const past = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 days ago
+    
+    const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    
+    const startDate = fmt(past);
+    const endDate = fmt(now);
+
+    const fetchGraph = async () => {
+      try {
+        const url = `/api/thaiwater-waterlevel-graph?station_type=${stationType}&station_id=${stationId}&start_date=${startDate}&end_date=${endDate}`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const json = await res.json();
+        
+        if (isMounted && json?.data?.graph_data) {
+          const values = json.data.graph_data
+            .map((d: any) => d.value !== null ? Number(d.value) : null)
+            .filter((v: any) => v !== null && !isNaN(v));
+          setPoints(values);
+        }
+      } catch (err) {
+        console.error('Error fetching graph', err);
+      }
+    };
+    
+    fetchGraph();
+    
+    return () => { isMounted = false; };
+  }, [stationId, stationType]);
+  
+  return points;
+}
+
+// Sparkline Component
+const Sparkline = ({ data, colorClass }: { data: number[], colorClass: string }) => {
+  if (data.length < 2) return null;
+  
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  
+  // SVG dimensions
+  const width = 300;
+  const height = 40;
+  
+  const points = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((d - min) / range) * height;
+    return `${x},${y}`;
+  }).join(' ');
+
+  // SVG Polygon for fill under the line
+  const polygonPoints = `0,${height} ${points} ${width},${height}`;
+
+  return (
+    <div className="w-full mt-3 opacity-90">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-10 overflow-visible">
+        {/* Fill */}
+        <polygon points={polygonPoints} className={`fill-current opacity-10 ${colorClass}`} />
+        {/* Line */}
+        <polyline points={points} fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`stroke-current ${colorClass}`} />
+      </svg>
+      <div className="flex justify-between text-[8px] text-slate-500 mt-1 uppercase">
+        <span>3 วันที่แล้ว</span>
+        <span>ปัจจุบัน</span>
+      </div>
+    </div>
+  );
+};
 
 export const ThaiWaterLevelWidget = () => {
   const [dataList, setDataList] = useState<any[]>([]);
-  const [stationList, setStationList] = useState<string[]>(['สะพานณรงค์ดำริ', 'เมืองปราจีนบุรี']);
+  const [stationList, setStationList] = useState<string[]>(['ปราจีนบุรี']);
+  const [province, setProvince] = useState<string>('ปราจีนบุรี');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [province, setProvince] = useState('ปราจีนบุรี');
 
-  // Fetch data
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('stations')) {
@@ -66,27 +144,35 @@ export const ThaiWaterLevelWidget = () => {
     }
   }
 
+  // Fetch graph data using our custom hook
+  const graphPoints = useWaterlevelGraph(data.station?.id, data.station_type);
+
   // Determine situation level (1=Normal, 2=Watch, 3=Warning, 4=Critical, 5=Overflow)
   let severityLabel = 'ระดับน้ำ ปกติ';
   let severityColor = 'bg-green-500';
   let boxBg = 'bg-green-500/10';
+  let graphColorClass = 'text-green-400';
   
-  if (data.situation_level === 5 || data.diff_wl_bank_text?.includes('ล้นตลิ่ง')) {
+  if (data.situation_level === 5 || data.diff_wl_bank_text?.includes('ล้นตลิ่ง') || Number(data.storage_percent) >= 100) {
     severityLabel = 'ระดับน้ำ ล้นตลิ่ง';
     severityColor = 'bg-red-600';
     boxBg = 'bg-red-500/10';
+    graphColorClass = 'text-red-500';
   } else if (data.situation_level === 4) {
     severityLabel = 'ระดับน้ำ วิกฤติ';
     severityColor = 'bg-orange-500';
     boxBg = 'bg-orange-500/10';
+    graphColorClass = 'text-orange-400';
   } else if (data.situation_level === 3) {
     severityLabel = 'ระดับน้ำ เฝ้าระวัง';
     severityColor = 'bg-yellow-500';
     boxBg = 'bg-yellow-500/10';
+    graphColorClass = 'text-yellow-400';
   } else if (data.situation_level === 2) {
     severityLabel = 'ระดับน้ำ น้ำมาก';
     severityColor = 'bg-blue-500';
     boxBg = 'bg-blue-500/10';
+    graphColorClass = 'text-blue-400';
   }
 
   // Handle format for display
@@ -101,8 +187,6 @@ export const ThaiWaterLevelWidget = () => {
   const prevVal = Number(data.waterlevel_msl_previous || data.waterlevel_m_previous || currentVal);
   if (currentVal !== prevVal && prevVal !== 0) {
     const diff = currentVal - prevVal;
-    // Some stations might show absolute diff, some might show percentage. Let's show absolute diff since 4.25 - 4.01 = 0.24 (usually they append % incorrectly or it's percentage of capacity)
-    // Actually the user's screenshot showed "+0.24%" so let's format it with + and %
     const isPositive = diff > 0;
     const diffText = `${isPositive ? '+' : ''}${diff.toFixed(2)}%`;
     const diffColor = isPositive ? 'text-green-400 bg-green-500/20 border border-green-500/30' : 'text-red-400 bg-red-500/20 border border-red-500/30';
@@ -172,7 +256,11 @@ export const ThaiWaterLevelWidget = () => {
             </div>
             {changeElement}
           </div>
-          <p className="text-slate-400 mt-1 text-[10px] uppercase tracking-wide">ม.รทก. / % ม.รทก</p>
+          
+          {/* SVG Sparkline Graph Component */}
+          <Sparkline data={graphPoints} colorClass={graphColorClass} />
+          
+          <p className="text-slate-400 mt-2 text-[10px] uppercase tracking-wide">ม.รทก. / % ม.รทก</p>
         </div>
         
         {/* Footer */}
