@@ -153,13 +153,12 @@ useEffect(() => {
     const stationId = data.station?.id;
     if (stationId) {
        if (lastAnnounced[stationId] !== waterLevelForSpeech) {
-          // Only speak if this is an update, not the initial load of the station
-          if (lastAnnounced[stationId] !== undefined) {
-             const text = `ระดับน้ำสถานี ${stationNameForSpeech} มีการเปลี่ยนแปลง ค่าล่าสุดคือ ${waterLevelForSpeech} เมตร`;
-             const utterance = new SpeechSynthesisUtterance(text);
-             utterance.lang = "th-TH";
-             window.speechSynthesis.speak(utterance);
-          }
+          const text = lastAnnounced[stationId] === undefined
+               ? `ระดับน้ำปัจจุบันสถานี ${stationNameForSpeech} อยู่ที่ ${waterLevelForSpeech} เมตร`
+               : `ระดับน้ำสถานี ${stationNameForSpeech} มีการเปลี่ยนแปลง ค่าล่าสุดคือ ${waterLevelForSpeech} เมตร`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "th-TH";
+          window.speechSynthesis.speak(utterance);
           setLastAnnounced(prev => ({...prev, [stationId]: waterLevelForSpeech}));
        }
     }
