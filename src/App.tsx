@@ -1,3 +1,4 @@
+import { DancingGirlWidget } from "./widgets/DancingGirlWidget";
 import { DancingBlobWidget } from "./widgets/DancingBlobWidget";
 import { ChromeDinoWidget } from "./widgets/ChromeDinoWidget";
 import { RunningCatWidget } from "./widgets/RunningCatWidget";
@@ -52,6 +53,11 @@ const Home = () => (
         </Link>
       </li>
       <li>
+        <Link to="/widget/dancing-girl" style={{ color: "#ff88cc" }}>
+          Dancing Anime Girl 💃
+        </Link>
+      </li>
+      <li>
         <Link to="/widget/dancing-blob" style={{ color: "#ff7eb3" }}>
           Dancing Blob 🎧
         </Link>
@@ -92,6 +98,7 @@ function App() {
         <Route path="/widget/running-cat" element={<RunningCatWidget />} />
         <Route path="/widget/chrome-dino" element={<ChromeDinoWidget />} />
         <Route path="/widget/dancing-blob" element={<DancingBlobWidget />} />
+        <Route path="/widget/dancing-girl" element={<DancingGirlWidget />} />
       </Routes>
     </BrowserRouter>
   );
