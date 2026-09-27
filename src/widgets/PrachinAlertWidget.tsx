@@ -51,13 +51,13 @@ export const PrachinAlertWidget = () => {
           return diffHours <= 2;
         });
         
-        if (recentItems.length > 0) {
-          setAnnouncements(recentItems);
-        } else {
-          // Hide completely if there are no recent announcements
-          setAnnouncements([]);
-          setIsVisible(false);
-        }
+        const staticAlert = {
+  title: "ปภ.เตือนน้ำท่วม",
+  message: "เกิดน้ำท่วมในพื้นที่ จ.ปราจีนบุรี มีบ้านเรือนได้รับผลกระทบ 4,100 หลัง และระดับน้ำในแม่น้ำปราจีนบุรี ยังคงเพิ่มสูงขึ้นต่อเนื่อง คาดว่าจะสูงขึ้นอีกประมาณ 1 เมตร โดยเฉพาะ ในเขตเทศบาลเมืองปราจีนบุรี อ.ศรีมหาโพธิ อ.นาดี อ.กบินทร์บุรี และพื้นที่ใกล้เคียง ขอให้ผู้ที่อาศัยริมแม่น้ำ/ที่ลุ่มต่ำ/พื้นที่เสี่ยง ยกของขึ้นที่สูงทันที เคลื่อนย้ายรถทันที เก็บทรัพย์สินมีค่าและเอกสารสำคัญ ระวังไฟฟ้าดูด เคลื่อนย้ายกลุ่มเปราะบาง อพยพไปยังศูนย์พักพิงทันที หากต้องการความช่วยเหลือให้แจ้งกำนัน ผู้ใหญ่บ้าน หรือผู้นำชุมชน DDPM",
+  created_at: "2026-09-27T16:53:18"
+};
+
+setAnnouncements([staticAlert, ...recentItems]);
       } catch (err) {
         console.error('Error fetching announcements:', err);
       }
@@ -90,13 +90,13 @@ export const PrachinAlertWidget = () => {
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
       hideTimeoutRef.current = window.setTimeout(() => {
         setIsVisible(false);
-      }, 10000);
+      }, 30000);
 
       // Schedule next item to show 5 seconds after the current one hides (15s total cycle)
       if (cycleTimeoutRef.current) clearTimeout(cycleTimeoutRef.current);
       cycleTimeoutRef.current = window.setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % announcements.length);
-      }, 15000);
+      }, 35000);
     };
 
     showNextAnnouncement();
