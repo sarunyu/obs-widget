@@ -123,7 +123,16 @@ export const ThaiWaterLevelWidget = () => {
     return () => clearInterval(rotateInterval);
   }, [stationList]);
 
-  if (dataList.length === 0) return null;
+  if (dataList.length === 0) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center font-body text-white">
+        <div className="bg-slate-900/80 p-4 rounded-xl border border-white/20 shadow-2xl backdrop-blur-md flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+          <span>กำลังโหลดข้อมูลระดับน้ำ...</span>
+        </div>
+      </div>
+    );
+  }
 
   const currentStationName = stationList[currentIndex];
   let data = dataList.find((item: any) => 
@@ -140,7 +149,13 @@ export const ThaiWaterLevelWidget = () => {
         (Number(prev.storage_percent || 0) > Number(current.storage_percent || 0)) ? prev : current
       );
     } else {
-      return null;
+      return (
+        <div className="w-screen h-screen flex items-center justify-center font-body text-white">
+          <div className="bg-red-900/80 p-4 rounded-xl border border-red-500/50 shadow-2xl backdrop-blur-md">
+            <span>ไม่พบข้อมูลสถานี: {currentStationName}</span>
+          </div>
+        </div>
+      );
     }
   }
 

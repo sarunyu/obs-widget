@@ -80,6 +80,7 @@ function App() {
         <Route path="/widget/prachin-alert" element={<PrachinAlertWidget />} />
         <Route path="/widget/thaiwater-rain" element={<ThaiWaterRainWidget />} />
         <Route path="/widget/thaiwater-level" element={<ThaiWaterLevelWidget />} />
+        <Route path="/widget/thaiwater-levels" element={<ThaiWaterLevelWidget />} />
         <Route path="/widget/visualizer" element={<AudioVisualizerWidget />} />
         <Route path="/control" element={<ControlPanel />} />
         <Route path="/widget/running-cat" element={<RunningCatWidget />} />
