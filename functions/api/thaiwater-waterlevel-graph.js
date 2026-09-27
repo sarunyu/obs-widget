@@ -11,7 +11,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ error: 'Missing parameters' }), { status: 400 });
   }
 
-  const targetUrl = \`https://api-v3.thaiwater.net/api/v1/thaiwater30/public/waterlevel_graph?station_type=\${stationType}&station_id=\${stationId}&start_date=\${startDate}&end_date=\${endDate}\`;
+  const targetUrl = `https://api-v3.thaiwater.net/api/v1/thaiwater30/public/waterlevel_graph?station_type=${stationType}&station_id=${stationId}&start_date=${startDate}&end_date=${endDate}`;
 
   try {
     const response = await fetch(targetUrl, {
