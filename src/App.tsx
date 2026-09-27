@@ -9,6 +9,8 @@ import AudioVisualizerWidget from './widgets/AudioVisualizerWidget';
 import NeonAlertWidget from './widgets/NeonAlertWidget';
 import PrachinAlertWidget from './widgets/PrachinAlertWidget';
 import ThaiWaterRainWidget from './widgets/ThaiWaterRainWidget';
+import EmergencyAlertWidget from './widgets/EmergencyAlertWidget';
+
 import ThaiWaterLevelWidget from './widgets/ThaiWaterLevelWidget';
 import ControlPanel from './ControlPanel';
 
@@ -92,6 +94,7 @@ function App() {
         <Route path="/widget/prachin-alert" element={<PrachinAlertWidget />} />
         <Route path="/widget/thaiwater-rain" element={<ThaiWaterRainWidget />} />
         <Route path="/widget/thaiwater-level" element={<ThaiWaterLevelWidget />} />
+        <Route path="/widget/emergency-alert" element={<EmergencyAlertWidget />} />
         <Route path="/widget/thaiwater-levels" element={<ThaiWaterLevelWidget />} />
         <Route path="/widget/visualizer" element={<AudioVisualizerWidget />} />
         <Route path="/control" element={<ControlPanel />} />
