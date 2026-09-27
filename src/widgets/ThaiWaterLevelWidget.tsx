@@ -9,7 +9,7 @@ function useWaterlevelGraph(stationId?: number | string, stationType?: string) {
     
     let isMounted = true;
     const now = new Date();
-    const past = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 days ago
+    const past = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000); // 1 day ago
     
     const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     
