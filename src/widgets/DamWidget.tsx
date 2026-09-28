@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-export const PrachinDamWidget = () => {
+interface DamWidgetProps {
+  damName: string;
+}
+
+export const DamWidget = ({ damName }: DamWidgetProps) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [lastAnnounced, setLastAnnounced] = useState<string | null>(null);
@@ -12,7 +16,7 @@ export const PrachinDamWidget = () => {
       const json = await res.json();
       
       if (json.success && json.data) {
-        const dam = json.data.find((d: any) => d.name === "เขื่อนนฤบดินทรจินดา");
+        const dam = json.data.find((d: any) => d.name === damName);
         if (dam) {
           setData(dam);
         }
@@ -28,7 +32,7 @@ export const PrachinDamWidget = () => {
     fetchDamData();
     const interval = setInterval(fetchDamData, 5 * 60 * 1000); // refresh every 5 mins
     return () => clearInterval(interval);
-  }, []);
+  }, [damName]);
 
   // Text-to-speech for dam updates
   useEffect(() => {
@@ -143,4 +147,4 @@ export const PrachinDamWidget = () => {
   );
 };
 
-export default PrachinDamWidget;
+export default DamWidget;

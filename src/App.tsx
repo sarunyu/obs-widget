@@ -10,9 +10,7 @@ import NeonAlertWidget from './widgets/NeonAlertWidget';
 import PrachinAlertWidget from './widgets/PrachinAlertWidget';
 import ThaiWaterRainWidget from './widgets/ThaiWaterRainWidget';
 import EmergencyAlertWidget from './widgets/EmergencyAlertWidget';
-import PrachinDamWidget from './widgets/PrachinDamWidget';
-
-
+import DamWidget from './widgets/DamWidget';
 import ThaiWaterLevelWidget from './widgets/ThaiWaterLevelWidget';
 import ControlPanel from './ControlPanel';
 
@@ -22,58 +20,23 @@ const Home = () => (
     <p>Available Pages:</p>
     <ul>
       <li>
-        <Link to="/widget/text3d" style={{ color: '#00ffcc' }}>
-          3D Text Widget
+        <Link to="/widget/prachin-dam" style={{ color: '#3388ff' }}>
+          Dam: เขื่อนนฤบดินทรจินดา
         </Link>
       </li>
       <li>
-        <Link to="/widget/slide-text" style={{ color: '#00ccff' }}>
-          Bottom Slide Text Widget
+        <Link to="/widget/khundan-dam" style={{ color: '#3388ff' }}>
+          Dam: เขื่อนขุนด่านปราการชล
         </Link>
       </li>
       <li>
-        <Link to="/widget/neon-alert" style={{ color: '#ff00ff' }}>
-          Neon Alert Overlay
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/prachin-alert" style={{ color: '#ff3333' }}>
-          Prachin Flood Alerts
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/thaiwater-rain" style={{ color: '#3388ff' }}>
-          ThaiWater Rain 24h (ฝนสะสม)
+        <Link to="/widget/emergency-alert" style={{ color: '#ff3333' }}>
+          Flood Emergency Alert
         </Link>
       </li>
       <li>
         <Link to="/widget/thaiwater-level" style={{ color: '#33ffaa' }}>
           ThaiWater Water Level (ระดับน้ำ)
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/visualizer" style={{ color: '#ff00cc' }}>
-          Audio Visualizer Background
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/dancing-girl" style={{ color: "#ff88cc" }}>
-          Dancing Anime Girl 💃
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/dancing-blob" style={{ color: "#ff7eb3" }}>
-          Dancing Blob 🎧
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/chrome-dino" style={{ color: "#cccccc" }}>
-          Chrome Dino 🦖
-        </Link>
-      </li>
-      <li>
-        <Link to="/widget/running-cat" style={{ color: "#ffaa00" }}>
-          Running Cat 🐈
         </Link>
       </li>
       <li>
@@ -97,7 +60,8 @@ function App() {
         <Route path="/widget/thaiwater-rain" element={<ThaiWaterRainWidget />} />
         <Route path="/widget/thaiwater-level" element={<ThaiWaterLevelWidget />} />
         <Route path="/widget/emergency-alert" element={<EmergencyAlertWidget />} />
-        <Route path="/widget/prachin-dam" element={<PrachinDamWidget />} />
+        <Route path="/widget/prachin-dam" element={<DamWidget damName="เขื่อนนฤบดินทรจินดา" />} />
+        <Route path="/widget/khundan-dam" element={<DamWidget damName="เขื่อนขุนด่านปราการชล" />} />
         <Route path="/widget/thaiwater-levels" element={<ThaiWaterLevelWidget />} />
         <Route path="/widget/visualizer" element={<AudioVisualizerWidget />} />
         <Route path="/control" element={<ControlPanel />} />

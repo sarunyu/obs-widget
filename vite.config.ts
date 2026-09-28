@@ -6,6 +6,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api/bigdata-swoc-dam': {
+        target: 'https://bigdata-swoc.rid.go.th',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/bigdata-swoc-dam/, '/api/ma/dashboard/get_dam'),
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
+        }
+      },
       '/api/thaiwater-rain': {
         target: 'https://api-v3.thaiwater.net',
         changeOrigin: true,
