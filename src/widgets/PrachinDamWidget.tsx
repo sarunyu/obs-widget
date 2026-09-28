@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 export const PrachinDamWidget = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [lastAnnounced, setLastAnnounced] = useState<string | null>(null);
 
   const fetchDamData = async () => {
     try {
@@ -28,6 +29,22 @@ export const PrachinDamWidget = () => {
     const interval = setInterval(fetchDamData, 5 * 60 * 1000); // refresh every 5 mins
     return () => clearInterval(interval);
   }, []);
+
+  // Text-to-speech for dam updates
+  useEffect(() => {
+    if (data && data.dam_volume !== undefined) {
+       const currentVolume = String(data.dam_volume);
+       if (lastAnnounced !== currentVolume) {
+          const text = lastAnnounced === null
+             ? `ปริมาณน้ำปัจจุบันใน${data.name} อยู่ที่ ${data.dam_volume} ล้านลูกบาศก์เมตร คิดเป็น ${data.dam_percent_storage} เปอร์เซ็นต์`
+             : `อัปเดตปริมาณน้ำใน${data.name} ล่าสุดอยู่ที่ ${data.dam_volume} ล้านลูกบาศก์เมตร คิดเป็น ${data.dam_percent_storage} เปอร์เซ็นต์`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "th-TH";
+          window.speechSynthesis.speak(utterance);
+          setLastAnnounced(currentVolume);
+       }
+    }
+  }, [data, lastAnnounced]);
 
   if (loading) {
     return (
